@@ -1,10 +1,10 @@
-# STM32F446XX board support package drivers
+# STM32F446xx board support package drivers
 
 ## Currently supports:
+- [x] ds1307 real-time clock
 - [ ] adxl345 accelometer
 - [ ] mpu6050 accelometer and gyroscope
 - [ ] nrf24l01 radio transmitter and receiver
-- [ ] ds1307 read time clock
 - [ ] ssd1306 OLED display
 - [ ] hc-06 Bluetooth module
 - [ ] bmp280 barometer and pressure sensor
