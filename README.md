@@ -2,12 +2,12 @@
 
 ## Currently supports:
 - [x] ds1307 real-time clock
+- [x] bmp280 temperature and pressure sensor
 - [ ] adxl345 accelometer
 - [ ] mpu6050 accelometer and gyroscope
 - [ ] nrf24l01 radio transmitter and receiver
 - [ ] ssd1306 OLED display
 - [ ] hc-06 Bluetooth module
-- [ ] bmp280 barometer and pressure sensor
 
 ## How to build and flash?
 **Note: this project has only been tested on Linux**
