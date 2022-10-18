@@ -37,7 +37,7 @@ typedef struct
 
 /* BMP280 public driver API */
 uint8_t bmp280_init    (bmp280_handle_t *bmp280);
-void    bmp280_measure (void);
+void    bmp280_measure (bmp280_handle_t *bmp280);
 void    bmp280_wakeup  (void);
 
 /* @osrs configuration */
@@ -71,6 +71,7 @@ void    bmp280_wakeup  (void);
 #define BMP280_IIR_16       0x04
 
 /* BMP280 registers */
+#define BMP280_REG_CALIB00      0x88
 #define BMP280_REG_ID           0xD0
 #define BMP280_REG_RESET        0xE0
 #define BMP280_REG_STATUS       0xF3
@@ -80,6 +81,7 @@ void    bmp280_wakeup  (void);
 #define BMP280_REG_TEMP_MSB     0xFA
 
 /* Other BMP280 macros */
+#define BMP280_CHIP_ID      0x58
 #define BMP280_INIT_SUCCESS 0
 #define BMP280_INIT_FAILURE 1
 
