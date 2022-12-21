@@ -1,2 +1,6 @@
 build/
 .ccls
+compile_commands.json
+.cache/
+.metadata/
+*.elf
