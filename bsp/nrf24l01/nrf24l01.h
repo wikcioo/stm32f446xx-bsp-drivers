@@ -45,4 +45,8 @@
 #define NRF24L01_CMD_REUSE_TX_PL        0xE3
 #define NRF24L01_CMD_NOP                0xFF
 
+/* Other macros */
+#define NRF24L01_SUCCESS 1
+#define NRF24L01_FAILURE 0
+
 #endif
