@@ -31,4 +31,18 @@
 #define NRF24L01_REG_DYNPD	            0x1C
 #define NRF24L01_REG_FEATURE	        0x1D
 
+/* Commands */
+#define NRF24L01_CMD_R_REGISTER         0x00
+#define NRF24L01_CMD_W_REGISTER         0x20
+#define NRF24L01_CMD_REGISTER_MASK      0x1F
+#define NRF24L01_CMD_ACTIVATE           0x50
+#define NRF24L01_CMD_R_RX_PL_WID        0x60
+#define NRF24L01_CMD_R_RX_PAYLOAD       0x61
+#define NRF24L01_CMD_W_TX_PAYLOAD       0xA0
+#define NRF24L01_CMD_W_ACK_PAYLOAD      0xA8
+#define NRF24L01_CMD_FLUSH_TX           0xE1
+#define NRF24L01_CMD_FLUSH_RX           0xE2
+#define NRF24L01_CMD_REUSE_TX_PL        0xE3
+#define NRF24L01_CMD_NOP                0xFF
+
 #endif
