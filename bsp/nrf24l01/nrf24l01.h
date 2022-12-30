@@ -3,6 +3,38 @@
 
 #include "stm32f446xx.h"
 
+/* NRF24L01 configuration structure */
+typedef struct
+{
+    spi_regdef_t  *spix;
+    gpio_regdef_t *gpiox;
+    uint8_t gpio_sck_pin;
+    uint8_t gpio_miso_pin;
+    uint8_t gpio_mosi_pin;
+    uint8_t gpio_nss_pin;
+} nrf24l01_spi_config_t;
+
+/* NRF24L01 device configuration structure */
+typedef struct
+{
+    gpio_regdef_t *gpiox_ce;
+    uint8_t gpio_ce_pin;
+    uint8_t mode;
+    uint8_t addr;
+} nrf24l01_dev_config_t;
+
+/* NRF24L01 handle structure */
+typedef struct
+{
+    nrf24l01_spi_config_t spi_config;
+    nrf24l01_dev_config_t dev_config;
+
+    uint8_t *tx_buffer;
+    uint8_t  tx_buffer_length;
+    uint8_t *rx_buffer;
+    uint8_t  rx_buffer_length;
+} nrf24l01_handle_t;
+
 /* NRF24L01 registers */
 #define NRF24L01_REG_CONFIG             0x00
 #define NRF24L01_REG_EN_AA              0x01
