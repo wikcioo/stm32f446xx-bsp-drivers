@@ -35,6 +35,18 @@ typedef struct
     uint8_t  rx_buffer_length;
 } nrf24l01_handle_t;
 
+/* NRF24L01 public driver API */
+void    nrf24l01_init               (nrf24l01_handle_t *nrf24l01);
+
+void    nrf24l01_set_tx_mode        (uint8_t *address, uint8_t channel);
+uint8_t nrf24l01_transmit           (uint8_t *data);
+
+void    nrf24l01_set_rx_mode        (uint8_t *address, uint8_t channel);
+void    nrf24l01_receive            (uint8_t *data);
+uint8_t nrf24l01_is_data_available  (int pipenum);
+
+void    nrf24l01_read_all           (uint8_t *data);
+
 /* NRF24L01 registers */
 #define NRF24L01_REG_CONFIG             0x00
 #define NRF24L01_REG_EN_AA              0x01
