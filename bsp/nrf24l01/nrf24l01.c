@@ -4,7 +4,28 @@
 
 static spi_handle_t nrf24l01_spi_handle;
 
-static void nrf24l01_spi_init(nrf24l01_spi_config_t *config);
+static gpio_regdef_t *gpio_chip_enable_port;
+static uint8_t        gpio_chip_enable_pin;
+static gpio_regdef_t *gpio_chip_select_port;
+static uint8_t        gpio_chip_select_pin;
+
+static void nrf24l01_spi_init           (nrf24l01_spi_config_t *config);
+static void nrf24l01_single_byte_write  (uint8_t reg, uint8_t *tx_buffer);
+static void nrf24l01_multi_byte_write   (uint8_t reg, uint8_t *tx_buffer, uint8_t length);
+
+static void nrf24l01_chip_enable(void);
+static void nrf24l01_chip_disable(void);
+static void nrf24l01_chip_select(void);
+static void nrf24l01_chip_unselect(void);
+
+void nrf24l01_init(nrf24l01_handle_t *nrf24l01)
+{
+    gpio_chip_enable_port = nrf24l01->dev_config.gpiox_ce;
+    gpio_chip_enable_pin  = nrf24l01->dev_config.gpio_ce_pin;
+    gpio_chip_select_port = nrf24l01->spi_config.gpiox;
+    gpio_chip_select_pin  = nrf24l01->spi_config.gpio_nss_pin;
+    nrf24l01_spi_init(&nrf24l01->spi_config);
+}
 
 static void nrf24l01_spi_init(nrf24l01_spi_config_t *config)
 {
@@ -37,4 +58,61 @@ static void nrf24l01_spi_init(nrf24l01_spi_config_t *config)
     nrf24l01_spi_handle.config.dff     = SPI_DFF_8BITS;
     nrf24l01_spi_handle.config.ff      = SPI_FF_MSB_FIRST;
     spi_init(&nrf24l01_spi_handle);
+}
+
+static void nrf24l01_single_byte_write(uint8_t reg, uint8_t *tx_buffer)
+{
+    uint8_t buf[2];
+    // in order to write to the register, the 5th bit must be set. See docs p.46
+    buf[0] = reg | (1 << 5);
+    buf[1] = *tx_buffer;
+
+    nrf24l01_chip_select();
+
+    spi_transmit(&nrf24l01_spi_handle, buf, 2);
+
+    nrf24l01_chip_unselect();
+}
+
+static void nrf24l01_multi_byte_write(uint8_t reg, uint8_t *tx_buffer, uint8_t length)
+{
+    uint8_t buf[1];
+    // in order to write to the register, the 5th bit must be set. See docs p.46
+    buf[0] = reg | (1 << 5);
+
+    nrf24l01_chip_select();
+
+    spi_transmit(&nrf24l01_spi_handle, buf, 1);
+    spi_transmit(&nrf24l01_spi_handle, tx_buffer, length);
+
+    nrf24l01_chip_unselect();
+}
+
+static void nrf24l01_chip_enable(void)
+{
+    gpio_write_pin(gpio_chip_enable_port, gpio_chip_enable_pin, GPIO_PIN_HIGH);
+}
+
+static void nrf24l01_chip_disable(void)
+{
+    gpio_write_pin(gpio_chip_enable_port, gpio_chip_enable_pin, GPIO_PIN_LOW);
+}
+
+static void nrf24l01_chip_select(void)
+{
+    gpio_write_pin(gpio_chip_select_port, gpio_chip_select_pin, GPIO_PIN_LOW);
+}
+
+static void nrf24l01_chip_unselect(void)
+{
+    gpio_write_pin(gpio_chip_select_port, gpio_chip_select_pin, GPIO_PIN_HIGH);
+}
+
+static void nrf24l01_send_cmd(uint8_t cmd)
+{
+    nrf24l01_chip_select();
+    
+    spi_transmit(&nrf24l01_spi_handle, &cmd, 1);
+
+    nrf24l01_chip_unselect();
 }
