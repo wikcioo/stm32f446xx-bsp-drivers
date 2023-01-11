@@ -20,6 +20,8 @@ static void nrf24l01_chip_disable(void);
 static void nrf24l01_chip_select(void);
 static void nrf24l01_chip_unselect(void);
 
+static void nrf24l01_send_cmd(uint8_t cmd);
+
 void nrf24l01_init(nrf24l01_handle_t *nrf24l01)
 {
     gpio_chip_enable_port = nrf24l01->dev_config.gpiox_ce;
@@ -48,6 +50,45 @@ void nrf24l01_init(nrf24l01_handle_t *nrf24l01)
     nrf24l01_single_byte_write(NRF24L01_REG_RF_SETUP, &data);
 
     nrf24l01_chip_enable();
+}
+
+void nrf24l01_set_tx_mode(uint8_t *address, uint8_t channel)
+{
+    nrf24l01_chip_disable();
+
+    nrf24l01_single_byte_write(NRF24L01_REG_RF_CH, &channel);
+    nrf24l01_multi_byte_write(NRF24L01_REG_TX_ADDR, address, 5);
+
+    // power up the device
+    uint8_t config;
+    nrf24l01_single_byte_read(NRF24L01_REG_CONFIG, &config);
+
+    config |= (1 << 1);
+    nrf24l01_single_byte_write(NRF24L01_REG_CONFIG, &config);
+
+    nrf24l01_chip_enable();
+}
+
+uint8_t nrf24l01_transmit(uint8_t *data)
+{
+    nrf24l01_chip_select();
+
+    nrf24l01_send_cmd(NRF24L01_CMD_W_TX_PAYLOAD);
+    
+    spi_transmit(&nrf24l01_spi_handle, data, 32);
+
+    nrf24l01_chip_unselect();
+
+    uint8_t fifo_status;
+    nrf24l01_single_byte_read(NRF24L01_REG_FIFO_STATUS, &fifo_status);
+
+    /* Check if tx fifo is empty and 2nd + 3rd bit are zero */
+    if ((fifo_status & (1 << 4)) && !((fifo_status >> 2) & 0x3))
+    {
+        return NRF24L01_SUCCESS;
+    }
+
+    return NRF24L01_FAILURE;
 }
 
 static void nrf24l01_spi_init(nrf24l01_spi_config_t *config)
