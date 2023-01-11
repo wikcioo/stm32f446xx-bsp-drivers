@@ -27,6 +27,27 @@ void nrf24l01_init(nrf24l01_handle_t *nrf24l01)
     gpio_chip_select_port = nrf24l01->spi_config.gpiox;
     gpio_chip_select_pin  = nrf24l01->spi_config.gpio_nss_pin;
     nrf24l01_spi_init(&nrf24l01->spi_config);
+
+    nrf24l01_chip_disable();
+
+    uint8_t data;
+
+    data = 0;
+    nrf24l01_single_byte_write(NRF24L01_REG_CONFIG, &data);
+    nrf24l01_single_byte_write(NRF24L01_REG_EN_AA, &data);
+    nrf24l01_single_byte_write(NRF24L01_REG_EN_RXADDR, &data);
+
+    data = 0x3;
+    nrf24l01_single_byte_write(NRF24L01_REG_SETUP_AW, &data);
+
+    data = 0;
+    nrf24l01_single_byte_write(NRF24L01_REG_SETUP_RETR, &data);
+    nrf24l01_single_byte_write(NRF24L01_REG_RF_CH, &data);
+
+    data = 0x0E;
+    nrf24l01_single_byte_write(NRF24L01_REG_RF_SETUP, &data);
+
+    nrf24l01_chip_enable();
 }
 
 static void nrf24l01_spi_init(nrf24l01_spi_config_t *config)
