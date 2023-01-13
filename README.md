@@ -5,7 +5,7 @@
 - [x] bmp280 temperature and pressure sensor
 - [ ] adxl345 accelometer
 - [ ] mpu6050 accelometer and gyroscope
-- [ ] nrf24l01 radio transmitter and receiver
+- [x] nrf24l01 radio transmitter and receiver (TODO: receiver)
 - [ ] ssd1306 OLED display
 - [ ] hc-06 Bluetooth module
 
