@@ -32,6 +32,8 @@ static int32_t t_raw, p_raw;
 
 uint8_t bmp280_init(bmp280_handle_t *bmp280)
 {
+    bmp280_i2c_init(&bmp280->pin_config);
+
     /* Validate the device by checking the chip_id */
     if (!bmp280_is_valid_chip())
         return BMP280_INIT_FAILURE;
